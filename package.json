@@ -1,0 +1,27 @@
+{
+  "name": "yunmai-google-fit-ifttt",
+  "version": "1.0.0",
+  "description": "Extract data from Google Fit that was saved by Yunmai weighing scales so it can be accessed by IFTTT",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/conoro/yunmai-google-fit-ifttt.git"
+  },
+  "keywords": [
+    "yunmai",
+    "google",
+    "fit",
+    "ifttt",
+    "fitness",
+    "weight"
+  ],
+  "author": "Conor O'Neill",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/conoro/yunmai-google-fit-ifttt/issues"
+  },
+  "homepage": "https://github.com/conoro/yunmai-google-fit-ifttt#readme"
+}
