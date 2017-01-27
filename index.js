@@ -2,6 +2,7 @@
 
  Copyright Conor O'Neill 2017 (conor@conoroneill.com)
  Portions Copyright Google
+ LICENSE: MIT
 
  This simple Node.js app accesses your weight data saved by a Yunmai weighing scales on your Google Fit/Fitness account
 
@@ -11,6 +12,14 @@ var fs = require('fs');
 var readline = require('readline');
 var google = require('googleapis');
 var googleAuth = require('google-auth-library');
+var level = require('levelup');
+
+var db = level('yunmai_weights.db');
+var wstream = fs.createWriteStream('yunmai_weights.csv');
+
+// Convince Excel to read CSV correctly
+wstream.write('sep=,\n');
+wstream.write('Date, Weight(KG)\n');
 
 // If modifying these scopes, delete your previously saved credentials
 // at ~/.credentials/fitness.googleapis.com-nodejs-quickstart.json
@@ -123,6 +132,20 @@ fitness.users.dataSources.datasets.get({
   for (var i = 0, len = response.point.length; i < len; i++) {
     var weightTime = new Date(parseInt(response.point[i].modifiedTimeMillis));
     console.log(weightTime, response.point[i].value[0].fpVal);
+
+    // Save in LevelDB. Don't need to worry about repeated entries
+    db.put(response.point[i].modifiedTimeMillis, response.point[i].value[0].fpVal, function (err) {
+      if (err) return console.log('Error writing to LevelDB!', err); // some kind of I/O error
+    });
+
+    // Save in CSV. Just overwriting entire file each time, so no need to worry about repeated entries
+    var niceDate = weightTime.getFullYear() + "-" + (weightTime.getMonth()+1) + "-" + weightTime.getDate() + " " + weightTime.getHours() + ":" + weightTime.getMinutes() + ":" + weightTime.getSeconds();
+    wstream.write(niceDate + ', ' + response.point[i].value[0].fpVal + '\n');
+
+    // Save in Google Sheets. Need to avoid repeated entries and overwriting manually entered columns
+
   }
+  wstream.end();
+
 });
 }
