@@ -1,6 +1,7 @@
 client_secret.json
 yunmai_weights.db
 yunmai_weights.csv
+conf.toml
 
 # Logs
 logs
