@@ -23,7 +23,7 @@ wstream.write('sep=,\n');
 wstream.write('createTime, weight, bmi, bmr, bone, fat, muscle, protein, resistance, somaAge, visFat, water\n');
 
 // With optional params:
-// uri: 'http://int.api.iyunmai.com/api/android/scale/'+ScaleID+'/list.json?code='+Code+'&%26startTime='+StartTime+'&lang=' + Lang + '&userId='+UserID+'&token='+Token,
+// uri: 'http://int.api.iyunmai.com/api/android/scale/'+scale+'/list.json?code='+code+'&%26startTime='+startTime+'&lang=' + lang + '&userId='+userId+'&token='+token,
 
 // Code and Token definitely seem to be related. Token must be generated from the Code
 // Some calls use a datestamp code e.g. 20170201 which seems to be reusable across other calls
@@ -32,7 +32,7 @@ wstream.write('createTime, weight, bmi, bmr, bone, fat, muscle, protein, resista
 
 const options = {
   method: 'GET',
-  uri: 'http://int.api.iyunmai.com/api/android/scale/'+ScaleID+'/list.json?code='+Code+'&userId='+UserID+'&token='+Token,
+  uri: 'http://int.api.iyunmai.com/api/android/scale/'+scale+'/list.json?code='+code+'&userId='+userId+'&token='+token,
   json: true
 }
 

@@ -21,6 +21,8 @@ const URL = require('url').URL;
 require('toml-require');
 require('./conf.toml');
 
+console.log("If you get more than one set of settings for conf.toml, always use the last set shown.\n\n");
+
 adb = spawn('C:\\Program Files (x86)\\Android\\android-sdk\\platform-tools\\adb.exe', ['logcat']);
 
 adb.stdout.on('data', function (data) {
@@ -30,17 +32,29 @@ adb.stdout.on('data', function (data) {
 
   var code = "not found";
   var token = "not found";
+  var scale = "not found";
+  var userId = "not found";
 
   if ((m = regex.exec(data)) !== null) {
       m.forEach((match, groupIndex) => {
           const myURL = new URL(match);
           code = myURL.searchParams.get('code');
           token = myURL.searchParams.get('token');
+          userId = myURL.searchParams.get('userId');
+
+          var pathArray = match.split( '/' );
+          for (i = 0; i < pathArray.length; i++) {
+            if (pathArray[i] == "scale"){
+              scale = pathArray[i+1];
+            }
+          }
       });
 
-      console.log("Code: " + code);
-      console.log("Token: " + token);
-
+      console.log("Save this output in conf.toml:");
+      console.log("scale = \"" + scale + "\"");
+      console.log("userId = \"" + userId + "\"");
+      console.log("code = \"" + code + "\"");
+      console.log("token = \"" + token  + "\"" + "\n\n");
   }
 });
 

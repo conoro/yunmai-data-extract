@@ -22,20 +22,26 @@ cd yunmai-data-extract
 npm install
 ```
 * rename conf-sample.toml to conf.toml
-* Connect your Android phone to your PC via USB. Run adb from the Android Platform tools as follows:
+* Connect your Android phone to your PC via USB (making sure [USB debugging is enabled](http://www.howtogeek.com/129728/how-to-access-the-developer-options-menu-and-enable-usb-debugging-on-android-4.2/) on your phone). Run:
 
 ```
-adb logcat | grep int.api.iyunmai.com/api/android/scale/
+node yunmai-new-token.js
 ```
+
 * Start the Yunmai App on the phone
-* Find the values for scale, userId, code and token in one of the API calls returned by adb. Save in conf.toml
-* Run the code with
+* Once the required settings are dumped by yunmai-new-token.js, type CTRL-C to exit
+* Take the final set of values it gives you for scale/userId/code/token and save them in conf.toml
+
+* To get your scales weight data you can now run the main app at any time with
 
 ```
 node index.js
 ```
 
-* If the code/token expires then you can easily get new ones by running the following with your Android phone connected to your PC:
+* That will currently generate an Excel-compatible CSV file and a LevelDB database for you. (More coming)
+* You don't have to run it every day, just whenever you want a data dump from the Yunmai
+
+* If the code/token ever expires then you can easily get new ones by re-running:
 
 ```
 node yunmai-new-token.js
