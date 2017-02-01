@@ -1,10 +1,10 @@
-/* yunmai-google-fit-ifttt
+/* yunmai-data-extract
 
  Copyright Conor O'Neill 2017 (conor@conoroneill.com)
  Portions Copyright Google
  LICENSE: MIT
 
- This simple Node.js app accesses your weight data saved by a Yunmai weighing scales on your Google Fit/Fitness account
+ This simple Node.js app downloads your weight data saved by a Yunmai weighing scales from their Cloud API
 
 */
 
