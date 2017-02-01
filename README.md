@@ -13,7 +13,7 @@ This is a work in progress.
 
 LICENSE: MIT
 
-## Setting it up for yourself (instructions from Google Quickstart)
+## Setting it up for yourself
 * Install [Node.js](https://nodejs.org/en/) and [Git](https://git-scm.com/)
 
 ```
@@ -21,6 +21,8 @@ git clone https://github.com/conoro/yunmai-data-extract
 cd yunmai-data-extract
 npm install
 ```
+* rename conf-sample.toml to conf.toml
+* TBF: Connect your Android phone to your PC. Run Android Studio. Look at the logs when Yunmai app is running. Extract IDs/Tokens/etc from logs. Save in conf.toml
 * Run the code with
 
 ```
@@ -30,9 +32,9 @@ node index.js
 # Plan
  I'll be iterating on this as follows:
 
-- [ ] Dump all weights and dates to console
-- [ ] Save in local LevelDB
-- [ ] Save in local CSV file
+- [x] Dump all weights and dates to console
+- [x] Save in local LevelDB
+- [x] Save in local CSV file
 - [ ] Save to Google Sheets
 - [ ] Expose the data in whatever format makes sense for IFTTT (ATOM maybe?)
 - [ ] I'll need to figure out how to get an access token by looking further at the Android logs. For the moment (or until it expires), I'll use the hard-coded one for me that I got in the logs.
