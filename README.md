@@ -13,8 +13,8 @@ This is a work in progress.
 
 LICENSE: MIT
 
-## Setting it up for yourself
-* Install [Node.js](https://nodejs.org/en/) and [Git](https://git-scm.com/)
+## Setting it up for yourself (Android only for the moment)
+* Install [Node.js](https://nodejs.org/en/), [Git](https://git-scm.com/) and [Android Platform Tools](https://developer.android.com/studio/releases/platform-tools.html#download)
 
 ```
 git clone https://github.com/conoro/yunmai-data-extract
@@ -22,12 +22,26 @@ cd yunmai-data-extract
 npm install
 ```
 * rename conf-sample.toml to conf.toml
-* TBF: Connect your Android phone to your PC. Run Android Studio. Look at the logs when Yunmai app is running. Extract IDs/Tokens/etc from logs. Save in conf.toml
+* Connect your Android phone to your PC via USB. Run adb from the Android Platform tools as follows:
+
+```
+adb logcat | grep int.api.iyunmai.com/api/android/scale/
+```
+* Start the Yunmai App on the phone
+* Find the values for scale, userId, code and token in one of the API calls returned by adb. Save in conf.toml
 * Run the code with
 
 ```
 node index.js
 ```
+
+* If the code/token expires then you can easily get new ones by running the following with your Android phone connected to your PC:
+
+```
+node yunmai-new-token.js
+```
+
+* Note that yunmai-new-token.js is currently written for Windows and assumes adb is in C:\Program Files (x86)\Android\android-sdk\platform-tools\adb.exe. So you may need to edit slightly for OSX or Linux.
 
 # Plan
  I'll be iterating on this as follows:
@@ -35,12 +49,6 @@ node index.js
 - [x] Dump all weights and dates to console
 - [x] Save in local LevelDB
 - [x] Save in local CSV file
+- [x] Extract an updated access code/token from logs on phone
 - [ ] Save to Google Sheets
 - [ ] Expose the data in whatever format makes sense for IFTTT (ATOM maybe?)
-- [ ] I'll need to figure out how to get an access token by looking further at the Android logs. For the moment (or until it expires), I'll use the hard-coded one for me that I got in the logs.
-
- Note, I probably won't bother with pagination since there is likely to only be one data point per day.
-
-
-# TODO
-* All of the above (v1.0.0 used the Google Fit API but since that flow works so poorly, I'm giving up on that)

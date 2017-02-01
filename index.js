@@ -22,10 +22,17 @@ var wstream = fs.createWriteStream('yunmai_weights.csv');
 wstream.write('sep=,\n');
 wstream.write('createTime, weight, bmi, bmr, bone, fat, muscle, protein, resistance, somaAge, visFat, water\n');
 
+// With optional params:
+// uri: 'http://int.api.iyunmai.com/api/android/scale/'+ScaleID+'/list.json?code='+Code+'&%26startTime='+StartTime+'&lang=' + Lang + '&userId='+UserID+'&token='+Token,
+
+// Code and Token definitely seem to be related. Token must be generated from the Code
+// Some calls use a datestamp code e.g. 20170201 which seems to be reusable across other calls
+// Note sure where the other codes come from
+// Will also not be able to check expiry/renewal until it happens in real-life
 
 const options = {
   method: 'GET',
-  uri: 'http://int.api.iyunmai.com/api/android/scale/'+ScaleID+'/list.json?code='+Code+'&%26startTime='+StartTime+'&lang=2&userId='+UserID+'&token='+Token,
+  uri: 'http://int.api.iyunmai.com/api/android/scale/'+ScaleID+'/list.json?code='+Code+'&userId='+UserID+'&token='+Token,
   json: true
 }
 
@@ -34,7 +41,6 @@ request(options)
     // Request was successful, use the response object at will
     console.dir(response, { depth: null })
     for (var i = 0, len = response.data.rows.length; i < len; i++) {
-      console.log(response.data.rows[i].weight);
 
       // Save in LevelDB. Don't need to worry about repeated entries
       db.put(response.data.rows[i].createTime, response.data.rows[i], function (err) {
@@ -55,7 +61,3 @@ request(options)
     // Something bad happened, handle the error
     console.dir(err)
   })
-
-
-
-  }
