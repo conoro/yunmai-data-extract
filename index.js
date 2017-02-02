@@ -42,15 +42,16 @@ request(options)
     console.dir(response, { depth: null })
     for (var i = 0, len = response.data.rows.length; i < len; i++) {
 
-      // Save in LevelDB. Don't need to worry about repeated entries
+      // Save in LevelDB. Don't need to worry about repeated entries. Automatically handles incremental updates too
       db.put(response.data.rows[i].createTime, response.data.rows[i], function (err) {
         if (err) return console.log('Error writing to LevelDB!', err); // some kind of I/O error
       });
 
       // Save in CSV. Just overwriting entire file each time, so no need to worry about repeated entries
+      //TODO: Handle incrementally updating CSV for when Yunmai API starts paging. Might be easier to use LevelDB data to generate CSV in entirity each time
       wstream.write(response.data.rows[i].createTime + ', ' + response.data.rows[i].weight + ', ' + response.data.rows[i].bmi + ', ' + response.data.rows[i].bmr + ', ' + response.data.rows[i].bone + ', ' + response.data.rows[i].fat + ', ' + response.data.rows[i].muscle + ', ' + response.data.rows[i].protein + ', ' + response.data.rows[i].resistance + ', ' + response.data.rows[i].somaAge + ', ' + response.data.rows[i].visFat + ', ' + response.data.rows[i].water + '\n');
 
-      // Save in Google Sheets. Need to avoid repeated entries and overwriting manually entered columns
+      //TODO: Save in Google Sheets. Need to avoid repeated entries and overwriting manually entered columns
 
     }
 

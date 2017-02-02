@@ -14,7 +14,7 @@ This is a work in progress.
 LICENSE: MIT
 
 ## Setting it up for yourself (Android only for the moment)
-* Install [Node.js](https://nodejs.org/en/), [Git](https://git-scm.com/) and [Android Platform Tools](https://developer.android.com/studio/releases/platform-tools.html#download)
+* Install [Node.js](https://nodejs.org/en/), [Git](https://git-scm.com/) and [Android Platform Tools](https://developer.android.com/studio/releases/platform-tools.html#download). Then run:
 
 ```
 git clone https://github.com/conoro/yunmai-data-extract
@@ -37,11 +37,11 @@ node yunmai-new-token.js
 ```
 node index.js
 ```
-
-* That will currently generate an Excel-compatible CSV file and a LevelDB database for you. (More coming)
+* Note the phone does not have to be connected to your PC when you are running that code
+* It will currently generate an Excel-compatible CSV file and a LevelDB database for you. (More coming)
 * You don't have to run it every day, just whenever you want a data dump from the Yunmai
 
-* If the code/token ever expires then you can easily get new ones by re-running:
+* If the code/token ever expires (you'll see errors when you run index.js) then you can easily get new ones by re-running:
 
 ```
 node yunmai-new-token.js
