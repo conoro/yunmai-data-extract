@@ -2,3 +2,6 @@ scale = "To be extracted by yunmai-new-token.js"
 userId = "To be extracted by yunmai-new-token.js"
 code = "To be extracted by yunmai-new-token.js"
 token = "To be extracted by yunmai-new-token.js"
+useGSheets = false
+gSheetsId = "Get it from the part of the url after /d/ in the Google Sheet you want to use"
+gSheetsTabId = "Get it from the gid in url of the Google Sheet you want to use"

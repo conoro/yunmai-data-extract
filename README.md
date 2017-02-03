@@ -7,7 +7,7 @@ If you are on Android, you can opt for the Yunmai app to save the data to [Googl
 
 By connecting my Galaxy S6 to Android Studio on my PC, I could look at the logs when the App was running. As expected there is an API server accepting/reporting your scales data. It returns good easy-to-understand JSON.
 
-This App will access that data on their API and save it in various formats locally for you to re-use elsewhere.
+This App will access that data on their API and save it in various formats locally and optionally on Google Sheets for you to re-use elsewhere.
 
 This is a work in progress.
 
@@ -22,6 +22,15 @@ cd yunmai-data-extract
 npm install
 ```
 * rename conf-sample.toml to conf.toml
+
+* If you want to save to Google Sheets, do the following:
+  * Follow all of the [Step 1 steps here](https://developers.google.com/sheets/api/quickstart/nodejs) to use the Sheets API
+  * Save the secrets file you get as client_secret.json in the yunmai-data-extract directory
+  * Create a Google Sheet and a Tab in that Sheet and then edit conf.toml to set:
+  * useGSheets = true
+  * gSheetsId = "Get it from the part of the url after /d/ in the Google Sheet you want to use"
+  * gSheetsTabId = "Get the Tab ID of the Sheet from the gid in url of the Google Sheet you want to use"
+
 * Connect your Android phone to your PC via USB (making sure [USB debugging is enabled](http://www.howtogeek.com/129728/how-to-access-the-developer-options-menu-and-enable-usb-debugging-on-android-4.2/) on your phone). Run:
 
 ```
@@ -38,8 +47,9 @@ node yunmai-new-token.js
 node index.js
 ```
 * Note the phone does not have to be connected to your PC when you are running that code
-* It will currently generate an Excel-compatible CSV file and a LevelDB database for you. (More coming)
+* It will currently generate an Excel-compatible CSV file and a LevelDB database for you.
 * You don't have to run it every day, just whenever you want a data dump from the Yunmai
+* If you choose to save to Google Sheets then the first time you run it, you'll have to follow the authorisation flow presented. It's self-explanatory and you won't have to do it again.
 
 * If the code/token ever expires (you'll see errors when you run index.js) then you can easily get new ones by re-running:
 
@@ -56,5 +66,5 @@ node yunmai-new-token.js
 - [x] Save in local LevelDB
 - [x] Save in local CSV file
 - [x] Extract an updated access code/token from logs on phone
-- [ ] Save to Google Sheets
+- [x] Save to Google Sheets
 - [ ] Expose the data in whatever format makes sense for IFTTT (ATOM maybe?)

@@ -3,6 +3,8 @@ yunmai_weights.db
 yunmai_weights_backup.db
 yunmai_weights.csv
 conf.toml
+gsheets_test.js
+leveldb_read_all_test.js
 
 # Logs
 logs
