@@ -50,6 +50,8 @@ node index.js
 * It will currently generate an Excel-compatible CSV file and a LevelDB database for you.
 * You don't have to run it every day, just whenever you want a data dump from the Yunmai
 * If you choose to save to Google Sheets then the first time you run it, you'll have to follow the authorisation flow presented. It's self-explanatory and you won't have to do it again.
+* You can add your own columns to Google Sheets and they'll be preserved (e.g. daily notes). But manually added rows will be overwritten.
+* Date format is proper European. Americans can edit the code to suit themselves ;-)
 
 * If the code/token ever expires (you'll see errors when you run index.js) then you can easily get new ones by re-running:
 
