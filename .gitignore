@@ -6,6 +6,8 @@ conf.toml
 gsheets_test.js
 leveldb_read_all_test.js
 node_modules
+.vscode
+
 
 # Logs
 logs
