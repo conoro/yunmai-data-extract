@@ -5,7 +5,8 @@ yunmai_weights.csv
 conf.toml
 gsheets_test.js
 leveldb_read_all_test.js
-node_modules
+/node_modules
+!/node_modules/leveldown
 .vscode
 
 
