@@ -61,6 +61,17 @@ node yunmai-new-token.js
 
 * Note that yunmai-new-token.js is currently written for Windows and assumes adb is in C:\Program Files (x86)\Android\android-sdk\platform-tools\adb.exe. So you may need to edit slightly for OSX or Linux.
 
+# Use of pkg
+This code now also runs successfully as an almost standalone binary using [pkg](https://github.com/zeit/pkg). You can see I have committed a Windows binary to the repo (compiled using Node 7.x). So to run the app on Windows, you don't need a full npm install, just the .exe and the committed Leveldown files in the node_modules directory.
+
+The command to build that binary is simply:
+
+```
+npm install -g pkg
+pkg index.js --output=yunmai-data-extract.exe --targets=node7-win-x64
+
+```
+
 # Plan
  I'll be iterating on this as follows:
 
