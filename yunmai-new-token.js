@@ -26,7 +26,7 @@ console.log("If you get more than one set of settings for conf.toml, always use 
 adb = spawn('C:\\Program Files (x86)\\Android\\android-sdk\\platform-tools\\adb.exe', ['logcat']);
 
 adb.stdout.on('data', function (data) {
-  const regex = /http:\/\/int\.api\.iyunmai\.com\/api\/android\/scale\/[0-9]+\/list\.json\?code=[0-9]+&%26startTime=[0-9]+&lang=2&userId=[0-9]+&token=[0-9a-fA-F]+/mi;
+  const regex = /http:\/\/intapi\.iyunmai\.com\/api\/android\/scale\/[0-9]+\/chart-list\.json\?code=[0-9]+&startTime=[0-9]+&lang=2&userId=[0-9]+&token=[0-9a-fA-F]+/mi;
 
   let m;
 
