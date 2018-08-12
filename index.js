@@ -136,11 +136,6 @@ function writeWeightData(auth) {
     json: true
   };
 
-  // If you need to have scale in the URL, set scale in conf.toml
-  if (typeof scale !== 'undefined' && scale) {
-    options.uri = "http://intdata.iyunmai.com/api/android/scale/" + scale + "/list.json";
-  }
-
   request(options)
     .then(function(response) {
       // Request was successful, use the response object at will

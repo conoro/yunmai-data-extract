@@ -25,7 +25,6 @@ npm install
 * Edit conf.toml and use the info from the requests as follows:
 
 ```
-scale = scale variable from requests
 userId = scale variable from requests
 code = code variable from requests
 token = token variable from requests
@@ -64,4 +63,3 @@ npm install -g pkg
 pkg index.js --output=yunmai-data-extract.exe --targets=node8-win-x64
 
 ```
-
