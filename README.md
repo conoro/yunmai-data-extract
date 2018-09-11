@@ -58,7 +58,7 @@ node index.js
 
 # Use of pkg
 
-This code now also runs successfully as an almost standalone binary using [pkg](https://github.com/zeit/pkg). You can see I have committed a Windows binary to the repo (compiled using Node 8.x). So to run the app on Windows, you don't need a full npm install, just the .exe and the committed Leveldown files in the node_modules directory.
+This code also runs successfully as an almost standalone binary using [pkg](https://github.com/zeit/pkg). 
 
 The command to build that binary is simply:
 
