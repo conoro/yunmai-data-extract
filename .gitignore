@@ -8,6 +8,7 @@ leveldb_read_all_test.js
 yunmai-data-extract.exe
 /node_modules
 .vscode
+history.json
 
 
 # Logs
