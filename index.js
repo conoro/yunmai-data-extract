@@ -111,7 +111,7 @@ function writeWeightData(auth) {
   // With optional params:
   // old uri: 'http://int.api.iyunmai.com/api/android/scale/'+scale+'/list.json?code='+code+'&%26startTime='+startTime+'&lang=' + lang + '&userId='+userId+'&token='+token,
   // new uri: http://intapi.iyunmai.com/api/android/scale/'+scale+'/list.json?code='+code+'&startTime='+startTime+'&lang='+lang+'&userId='+userId+'&token='+token
-  //  another new url (Aug 2018): http://intdata.iyunmai.com/api/android/scale/'+scale+'/list.json?code='+code+'&startTime='+startTime+'&lang='+lang+'&userId='+userId+'&versionCode=2'+'&token='+token
+  //  another new url (Aug 2018): http://intdata.iyunmai.com/api/android/scale/list.json?code='+code+'&startTime='+startTime+'&lang='+lang+'&userId='+userId+'&versionCode=2'+'&token='+token
 
   // Code and Token definitely seem to be related. Token must be generated from the Code
   // Some calls use a datestamp code e.g. 20170201 which seems to be reusable across other calls
