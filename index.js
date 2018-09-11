@@ -13,7 +13,7 @@ var fs = require("fs");
 var readline = require("readline");
 var google = require("googleapis");
 var googleAuth = require("google-auth-library");
-var level = require("levelup");
+var level = require("level");
 const request = require("request-promise");
 
 require("toml-require");
@@ -58,7 +58,7 @@ function authorize(credentials, callback) {
   var oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
 
   // Check if we have previously stored a token.
-  fs.readFile(TOKEN_PATH, function(err, token) {
+  fs.readFile(TOKEN_PATH, function (err, token) {
     if (err) {
       getNewToken(oauth2Client, callback);
     } else {
@@ -79,9 +79,9 @@ function getNewToken(oauth2Client, callback) {
     input: process.stdin,
     output: process.stdout
   });
-  rl.question("Enter the code from that page here: ", function(code) {
+  rl.question("Enter the code from that page here: ", function (code) {
     rl.close();
-    oauth2Client.getToken(code, function(err, token) {
+    oauth2Client.getToken(code, function (err, token) {
       if (err) {
         console.log("Error while trying to retrieve access token", err);
         return;
@@ -123,8 +123,7 @@ function writeWeightData(auth) {
 
   const options = {
     method: "GET",
-    uri:
-      "http://intapi.iyunmai.com/api/android/scale/" +
+    uri: "http://intapi.iyunmai.com/api/android/scale/" +
       scale +
       "/list.json?code=" +
       code +
@@ -139,15 +138,17 @@ function writeWeightData(auth) {
   };
 
   request(options)
-    .then(function(response) {
+    .then(function (response) {
       // Request was successful, use the response object at will
-      console.dir(response, { depth: null });
+      console.dir(response, {
+        depth: null
+      });
       for (var i = 0, len = response.data.rows.length; i < len; i++) {
         // Save in LevelDB. Don't need to worry about repeated entries. Automatically handles incremental updates too
         db.put(
           response.data.rows[i].createTime,
           response.data.rows[i],
-          function(err) {
+          function (err) {
             if (err) return console.log("Error writing to LevelDB!", err); // some kind of I/O error
           }
         );
@@ -168,132 +169,129 @@ function writeWeightData(auth) {
             rowIndex: row,
             columnIndex: column
           },
-          rows: [
-            {
-              values: [
-                {
-                  userEnteredValue: {
-                    stringValue: "Date"
-                  },
-                  userEnteredFormat: {
-                    textFormat: {
-                      bold: true
-                    }
-                  }
+          rows: [{
+            values: [{
+                userEnteredValue: {
+                  stringValue: "Date"
                 },
-                {
-                  userEnteredValue: {
-                    stringValue: "Weight (KG)"
-                  },
-                  userEnteredFormat: {
-                    textFormat: {
-                      bold: true
-                    }
-                  }
-                },
-                {
-                  userEnteredValue: {
-                    stringValue: "BMI"
-                  },
-                  userEnteredFormat: {
-                    textFormat: {
-                      bold: true
-                    }
-                  }
-                },
-                {
-                  userEnteredValue: {
-                    stringValue: "BMR"
-                  },
-                  userEnteredFormat: {
-                    textFormat: {
-                      bold: true
-                    }
-                  }
-                },
-                {
-                  userEnteredValue: {
-                    stringValue: "Bone"
-                  },
-                  userEnteredFormat: {
-                    textFormat: {
-                      bold: true
-                    }
-                  }
-                },
-                {
-                  userEnteredValue: {
-                    stringValue: "Body Fat"
-                  },
-                  userEnteredFormat: {
-                    textFormat: {
-                      bold: true
-                    }
-                  }
-                },
-                {
-                  userEnteredValue: {
-                    stringValue: "Muscle"
-                  },
-                  userEnteredFormat: {
-                    textFormat: {
-                      bold: true
-                    }
-                  }
-                },
-                {
-                  userEnteredValue: {
-                    stringValue: "Protein"
-                  },
-                  userEnteredFormat: {
-                    textFormat: {
-                      bold: true
-                    }
-                  }
-                },
-                {
-                  userEnteredValue: {
-                    stringValue: "Resistance"
-                  },
-                  userEnteredFormat: {
-                    textFormat: {
-                      bold: true
-                    }
-                  }
-                },
-                {
-                  userEnteredValue: {
-                    stringValue: "Body Age"
-                  },
-                  userEnteredFormat: {
-                    textFormat: {
-                      bold: true
-                    }
-                  }
-                },
-                {
-                  userEnteredValue: {
-                    stringValue: "Visceral Fat"
-                  },
-                  userEnteredFormat: {
-                    textFormat: {
-                      bold: true
-                    }
-                  }
-                },
-                {
-                  userEnteredValue: {
-                    stringValue: "Water"
-                  },
-                  userEnteredFormat: {
-                    textFormat: {
-                      bold: true
-                    }
+                userEnteredFormat: {
+                  textFormat: {
+                    bold: true
                   }
                 }
-              ]
-            }
-          ],
+              },
+              {
+                userEnteredValue: {
+                  stringValue: "Weight (KG)"
+                },
+                userEnteredFormat: {
+                  textFormat: {
+                    bold: true
+                  }
+                }
+              },
+              {
+                userEnteredValue: {
+                  stringValue: "BMI"
+                },
+                userEnteredFormat: {
+                  textFormat: {
+                    bold: true
+                  }
+                }
+              },
+              {
+                userEnteredValue: {
+                  stringValue: "BMR"
+                },
+                userEnteredFormat: {
+                  textFormat: {
+                    bold: true
+                  }
+                }
+              },
+              {
+                userEnteredValue: {
+                  stringValue: "Bone"
+                },
+                userEnteredFormat: {
+                  textFormat: {
+                    bold: true
+                  }
+                }
+              },
+              {
+                userEnteredValue: {
+                  stringValue: "Body Fat"
+                },
+                userEnteredFormat: {
+                  textFormat: {
+                    bold: true
+                  }
+                }
+              },
+              {
+                userEnteredValue: {
+                  stringValue: "Muscle"
+                },
+                userEnteredFormat: {
+                  textFormat: {
+                    bold: true
+                  }
+                }
+              },
+              {
+                userEnteredValue: {
+                  stringValue: "Protein"
+                },
+                userEnteredFormat: {
+                  textFormat: {
+                    bold: true
+                  }
+                }
+              },
+              {
+                userEnteredValue: {
+                  stringValue: "Resistance"
+                },
+                userEnteredFormat: {
+                  textFormat: {
+                    bold: true
+                  }
+                }
+              },
+              {
+                userEnteredValue: {
+                  stringValue: "Body Age"
+                },
+                userEnteredFormat: {
+                  textFormat: {
+                    bold: true
+                  }
+                }
+              },
+              {
+                userEnteredValue: {
+                  stringValue: "Visceral Fat"
+                },
+                userEnteredFormat: {
+                  textFormat: {
+                    bold: true
+                  }
+                }
+              },
+              {
+                userEnteredValue: {
+                  stringValue: "Water"
+                },
+                userEnteredFormat: {
+                  textFormat: {
+                    bold: true
+                  }
+                }
+              }
+            ]
+          }],
           fields: "userEnteredValue,userEnteredFormat.textFormat"
         }
       });
@@ -303,33 +301,33 @@ function writeWeightData(auth) {
       // read the whole LevelDB store as a stream and generate CSV and update GSheets
       db
         .createReadStream()
-        .on("data", function(data) {
+        .on("data", function (data) {
           // Save in CSV. Just overwriting entire file each time, so no need to worry about repeated entries
           wstream.write(
             data.value.createTime +
-              ", " +
-              data.value.weight +
-              ", " +
-              data.value.bmi +
-              ", " +
-              data.value.bmr +
-              ", " +
-              data.value.bone +
-              ", " +
-              data.value.fat +
-              ", " +
-              data.value.muscle +
-              ", " +
-              data.value.protein +
-              ", " +
-              data.value.resistance +
-              ", " +
-              data.value.somaAge +
-              ", " +
-              data.value.visFat +
-              ", " +
-              data.value.water +
-              "\n"
+            ", " +
+            data.value.weight +
+            ", " +
+            data.value.bmi +
+            ", " +
+            data.value.bmr +
+            ", " +
+            data.value.bone +
+            ", " +
+            data.value.fat +
+            ", " +
+            data.value.muscle +
+            ", " +
+            data.value.protein +
+            ", " +
+            data.value.resistance +
+            ", " +
+            data.value.somaAge +
+            ", " +
+            data.value.visFat +
+            ", " +
+            data.value.water +
+            "\n"
           );
 
           //Save in Google Sheets. Just overwriting entire set of columns each time, so no need to worry about repeated entries
@@ -341,84 +339,81 @@ function writeWeightData(auth) {
                 rowIndex: row,
                 columnIndex: column
               },
-              rows: [
-                {
-                  values: [
-                    {
-                      userEnteredValue: {
-                        stringValue: data.value.createTime
-                      },
-                      userEnteredFormat: {
-                        numberFormat: {
-                          type: "DATE",
-                          pattern: "dd/mm/yyyy hh:mm"
-                        }
-                      }
+              rows: [{
+                values: [{
+                    userEnteredValue: {
+                      stringValue: data.value.createTime
                     },
-                    {
-                      userEnteredValue: {
-                        numberValue: data.value.weight
-                      }
-                    },
-                    {
-                      userEnteredValue: {
-                        numberValue: data.value.bmi
-                      }
-                    },
-                    {
-                      userEnteredValue: {
-                        numberValue: data.value.bmr
-                      }
-                    },
-                    {
-                      userEnteredValue: {
-                        numberValue: data.value.bone
-                      }
-                    },
-                    {
-                      userEnteredValue: {
-                        numberValue: data.value.fat
-                      }
-                    },
-                    {
-                      userEnteredValue: {
-                        numberValue: data.value.muscle
-                      }
-                    },
-                    {
-                      userEnteredValue: {
-                        numberValue: data.value.protein
-                      }
-                    },
-                    {
-                      userEnteredValue: {
-                        numberValue: data.value.resistance
-                      }
-                    },
-                    {
-                      userEnteredValue: {
-                        numberValue: data.value.somaAge
-                      }
-                    },
-                    {
-                      userEnteredValue: {
-                        numberValue: data.value.visFat
-                      }
-                    },
-                    {
-                      userEnteredValue: {
-                        numberValue: data.value.water
+                    userEnteredFormat: {
+                      numberFormat: {
+                        type: "DATE",
+                        pattern: "dd/mm/yyyy hh:mm"
                       }
                     }
-                  ]
-                }
-              ],
+                  },
+                  {
+                    userEnteredValue: {
+                      numberValue: data.value.weight
+                    }
+                  },
+                  {
+                    userEnteredValue: {
+                      numberValue: data.value.bmi
+                    }
+                  },
+                  {
+                    userEnteredValue: {
+                      numberValue: data.value.bmr
+                    }
+                  },
+                  {
+                    userEnteredValue: {
+                      numberValue: data.value.bone
+                    }
+                  },
+                  {
+                    userEnteredValue: {
+                      numberValue: data.value.fat
+                    }
+                  },
+                  {
+                    userEnteredValue: {
+                      numberValue: data.value.muscle
+                    }
+                  },
+                  {
+                    userEnteredValue: {
+                      numberValue: data.value.protein
+                    }
+                  },
+                  {
+                    userEnteredValue: {
+                      numberValue: data.value.resistance
+                    }
+                  },
+                  {
+                    userEnteredValue: {
+                      numberValue: data.value.somaAge
+                    }
+                  },
+                  {
+                    userEnteredValue: {
+                      numberValue: data.value.visFat
+                    }
+                  },
+                  {
+                    userEnteredValue: {
+                      numberValue: data.value.water
+                    }
+                  }
+                ]
+              }],
               fields: "userEnteredValue, userEnteredFormat.numberFormat"
             }
           });
           row++;
         })
-        .on("close", function() {
+        .on("close", function () {
           db.close();
           wstream.end();
           console.log("CSV updated");
@@ -428,13 +423,12 @@ function writeWeightData(auth) {
           };
 
           if (useGSheets === true) {
-            sheets.spreadsheets.batchUpdate(
-              {
+            sheets.spreadsheets.batchUpdate({
                 auth: auth,
                 spreadsheetId: gSheetsId,
                 resource: batchUpdateRequest
               },
-              function(err, response) {
+              function (err, response) {
                 if (err) {
                   // Handle error
                   console.log(err);
@@ -445,7 +439,7 @@ function writeWeightData(auth) {
           }
         });
     })
-    .catch(function(err) {
+    .catch(function (err) {
       // Something bad happened, handle the error
       console.dir(err);
     });
