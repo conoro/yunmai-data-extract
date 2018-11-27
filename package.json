@@ -4,7 +4,9 @@
   "description": "Extract data from Yunmai weighing scales Cloud API so you can use it as you wish",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -28,6 +30,8 @@
     "level": "^4.0.0",
     "request-promise": "^4.1.1",
     "toml": "^2.3.1",
-    "toml-require": "^1.1.0"
-  }
+    "toml-require": "^1.1.0",
+    "snyk": "^1.110.2"
+  },
+  "snyk": true
 }
