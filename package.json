@@ -29,9 +29,9 @@
     "googleapis": "^16.1.0",
     "level": "^4.0.0",
     "request-promise": "^4.1.1",
+    "snyk": "^1.110.2",
     "toml": "^2.3.1",
-    "toml-require": "^1.1.0",
-    "snyk": "^1.110.2"
+    "toml-require": "git+https://github.com/conoro/toml-require.git"
   },
   "snyk": true
 }
