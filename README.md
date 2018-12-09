@@ -1,5 +1,7 @@
 # Intro
 
+_NOTE: Code currently (December 2018) not working due to changes in Yunami API_
+
 The [Yunmai weighing scales](http://www.iyunmai.com/us/light/) is an impressive inexpensive smart scales with Bluetooth. I bought mine from [GearBest](http://www.gearbest.com/monitoring-testing/pp_332025.html). If you install their app on your phone, it will connect to the scales and save all of your data, each time you weigh yourself.
 
 Whilst it isn't obvious, Yunmai is also saving all of your data to their Cloud. Unfortunately they have no webapp for accessing this data and no way for you to dump it out either.
@@ -58,7 +60,7 @@ node index.js
 
 # Use of pkg
 
-This code also runs successfully as an almost standalone binary using [pkg](https://github.com/zeit/pkg). 
+This code also runs successfully as an almost standalone binary using [pkg](https://github.com/zeit/pkg).
 
 The command to build that binary is simply:
 
