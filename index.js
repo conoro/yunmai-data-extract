@@ -9,10 +9,13 @@
 
 */
 
-var fs = require("fs");
-var readline = require("readline");
-var google = require("googleapis");
-var googleAuth = require("google-auth-library");
+const {google} = require('googleapis');
+const express = require('express');
+const opn = require('open');
+const path = require('path');
+const fs = require('fs');
+
+const {GoogleAuth} = require('google-auth-library');
 var level = require("level");
 const request = require("request-promise");
 
@@ -30,71 +33,67 @@ wstream.write(
   "createTime, weight, bmi, bmr, bone, fat, muscle, protein, resistance, somaAge, visFat, water\n"
 );
 
-// If modifying these scopes, delete your previously saved credentials
-// at ~/.credentials/sheets.googleapis.com-nodejs-quickstart.json
-var SCOPES = ["https://www.googleapis.com/auth/spreadsheets"];
+
+// If any problems connecting to GSheets, delete ~/.credentials/yunmai-data-extract-gsheets.json
 var TOKEN_DIR =
   (process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE) +
   "/.credentials/";
-var TOKEN_PATH = TOKEN_DIR + "sheets.googleapis.com-nodejs-quickstart.json";
+var TOKEN_PATH = TOKEN_DIR + "yunmai-data-extract-gsheets.json";
 
-// Load client secrets from a local file.
-fs.readFile("client_secret.json", function processClientSecrets(err, content) {
-  if (err) {
-    console.log("Error loading client secret file: " + err);
-    return;
-  }
-  // Authorize a client with the loaded credentials, then call the
-  // Google Sheets API.
-  authorize(JSON.parse(content), writeWeightData);
+
+
+const keyfile = 'client_secret.json';
+const keys = JSON.parse(fs.readFileSync(keyfile));
+const scopes = ["https://www.googleapis.com/auth/spreadsheets"];
+
+// Create an oAuth2 client to authorize the API call
+const client = new google.auth.OAuth2(
+  keys.web.client_id,
+  keys.web.client_secret,
+  keys.web.redirect_uris[0]
+);
+
+
+// Generate the url that will be used for authorization
+authorizeUrl = client.generateAuthUrl({
+  access_type: 'offline',
+  scope: scopes,
 });
 
-// Create an OAuth2 client with the given credentials, and then execute the given callback function.
-function authorize(credentials, callback) {
-  var clientSecret = credentials.installed.client_secret;
-  var clientId = credentials.installed.client_id;
-  var redirectUrl = credentials.installed.redirect_uris[0];
-  var auth = new googleAuth();
-  var oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
+const app = express();
 
-  // Check if we have previously stored a token.
-  fs.readFile(TOKEN_PATH, function (err, token) {
+const server = app.listen(3000, () => {
+});    
+
+app.get('/', (req, res) => {
+  const code = req.query.code;
+  client.getToken(code, (err, tokens) => {
     if (err) {
-      getNewToken(oauth2Client, callback);
-    } else {
-      oauth2Client.credentials = JSON.parse(token);
-      callback(oauth2Client);
+      console.error('Error getting oAuth tokens:');
+      throw err;
     }
+    client.credentials = tokens;
+    storeToken(tokens);
+    res.send('Authentication successful! Please return to the console.');
+    server.close();
+    writeWeightData(client);
   });
-}
+});
 
-// Get and store new token after prompting for user authorization, and then execute the given callback with the authorized OAuth2 client.
-function getNewToken(oauth2Client, callback) {
-  var authUrl = oauth2Client.generateAuthUrl({
-    access_type: "offline",
-    scope: SCOPES
-  });
-  console.log("Authorize this app by visiting this url: ", authUrl);
-  var rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
-  rl.question("Enter the code from that page here: ", function (code) {
-    rl.close();
-    oauth2Client.getToken(code, function (err, token) {
-      if (err) {
-        console.log("Error while trying to retrieve access token", err);
-        return;
-      }
-      oauth2Client.credentials = token;
-      storeToken(token);
-      callback(oauth2Client);
-    });
-  });
-}
 
-// Store GSheets token to disk be used in later program executions.
-function storeToken(token) {
+// Check if we have previously stored a token.
+fs.readFile(TOKEN_PATH, function (err, token) {
+  if (err) {
+      opn(authorizeUrl, {wait: false});
+  } else {
+    client.credentials = JSON.parse(token);
+    writeWeightData(client);
+    server.close();
+  }
+});
+
+
+function storeToken(tokens) {
   try {
     fs.mkdirSync(TOKEN_DIR);
   } catch (err) {
@@ -102,18 +101,17 @@ function storeToken(token) {
       throw err;
     }
   }
-  fs.writeFile(TOKEN_PATH, JSON.stringify(token));
-  console.log("Token stored to " + TOKEN_PATH);
+
+  fs.writeFile(TOKEN_PATH, JSON.stringify(tokens), function (err) {
+    if (err) throw err;
+    console.log("Token stored to " + TOKEN_PATH);
+  });
 }
 
 // Main function which does the work
 function writeWeightData(auth) {
   // With optional params:
-  // old uri: 'http://int.api.iyunmai.com/api/android/scale/'+scale+'/list.json?code='+code+'&%26startTime='+startTime+'&lang=' + lang + '&userId='+userId+'&token='+token,
-  // new uri: http://intapi.iyunmai.com/api/android/scale/'+scale+'/list.json?code='+code+'&startTime='+startTime+'&lang='+lang+'&userId='+userId+'&token='+token
-  //  another new url (Aug 2018): http://intdata.iyunmai.com/api/android/scale/list.json?code='+code+'&startTime='+startTime+'&lang='+lang+'&userId='+userId+'&versionCode=2'+'&token='+token
-  //  url  regression (Oct 2018): http://intapi.iyunmai.com/api/android/scale/list.json?code='+code+'&startTime='+startTime+'&lang='+lang+'&userId='+userId+'&versionCode=2'+'&token='+token
-
+  // August 2019: http://intdata.iyunmai.com/api/android/scale/list.json?code='+code+'&%26startTime='+epochtime+'&lang='+lang+'&userId='+userId+'&versionCode=2&token='+token
   // Code and Token definitely seem to be related. Token must be generated from the Code
   // Some calls use a datestamp code e.g. 20170201 which seems to be reusable across other calls
   // Note sure where the other codes come from
@@ -127,8 +125,8 @@ function writeWeightData(auth) {
     method: "GET",
     uri: "http://intdata.iyunmai.com/api/android/scale/list.json?code=" +
       code +
-      "&startTime=" +
-      "1539730800" +
+      "&%26startTime=" +
+      epochtime +
       "&lang=2" +
       "&userId=" +
       userId +

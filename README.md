@@ -1,6 +1,6 @@
 # Intro
 
-_NOTE: Code currently (December 2018) not working due to changes in Yunami API_
+_NOTE: Code currently (September 2019) working again
 
 The [Yunmai weighing scales](http://www.iyunmai.com/us/light/) is an impressive inexpensive smart scales with Bluetooth. I bought mine from [GearBest](http://www.gearbest.com/monitoring-testing/pp_332025.html). If you install their app on your phone, it will connect to the scales and save all of your data, each time you weigh yourself.
 
@@ -45,7 +45,13 @@ node index.js
 - You don't have to run it every day, just whenever you want a data dump from the Yunmai
 
 - If you want to save to Google Sheets, do the following:
-  - Follow all of the [Step 1 steps here](https://developers.google.com/sheets/api/quickstart/nodejs) to use the Sheets API
+  - Enable the GSheets API in the [Google API Console](https://console.developers.google.com)
+  - Create a new set of Credentials of type Oauth Client ID
+  - Select Web Application as the App type
+  - Fill out the name field
+  - Skip the Authorized JavaScript origins
+  - Enter `http://127.0.0.1:3000` as the Authorized redirect URIs
+  - Click "Create"
   - Save the secrets file you get as client_secret.json in the yunmai-data-extract directory
   - Create a Google Sheet and a Tab in that Sheet and then edit conf.toml to set:
   - useGSheets = true
@@ -53,18 +59,9 @@ node index.js
   - gSheetsTabId = "Get the Tab ID of the Sheet from the gid in url of the Google Sheet you want to use"
 
 * If you choose to save to Google Sheets then the first time you run it, you'll have to follow the authorisation flow presented. It's self-explanatory and you won't have to do it again.
+* If you ever have auth issues with GSheets, just delete ~/.credentials/yunmai-data-extract-gsheets.json and re-run
 * You can add your own columns to Google Sheets and they'll be preserved (e.g. daily notes). But manually added rows will be overwritten.
 * Date format is proper European. Americans can edit the code to suit themselves ;-)
 
-* If the code/token ever expires (you'll see errors when you run index.js) then you can easily get new ones by re-running Packet Capture
+* If the Yunmai code/token ever expires (you'll see errors when you run index.js) then you can easily get new ones by re-running Packet Capture
 
-# Use of pkg
-
-This code also runs successfully as an almost standalone binary using [pkg](https://github.com/zeit/pkg).
-
-The command to build that binary is simply:
-
-```
-npm install -g pkg
-pkg index.js --output=yunmai-data-extract.exe --targets=node8-win-x64
-```
