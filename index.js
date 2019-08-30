@@ -9,13 +9,13 @@
 
 */
 
-const {google} = require('googleapis');
-const express = require('express');
-const opn = require('open');
-const path = require('path');
-const fs = require('fs');
+const { google } = require("googleapis");
+const express = require("express");
+const opn = require("open");
+const path = require("path");
+const fs = require("fs");
 
-const {GoogleAuth} = require('google-auth-library');
+const { GoogleAuth } = require("google-auth-library");
 var level = require("level");
 const request = require("request-promise");
 
@@ -33,65 +33,62 @@ wstream.write(
   "createTime, weight, bmi, bmr, bone, fat, muscle, protein, resistance, somaAge, visFat, water\n"
 );
 
-
 // If any problems connecting to GSheets, delete ~/.credentials/yunmai-data-extract-gsheets.json
 var TOKEN_DIR =
   (process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE) +
   "/.credentials/";
 var TOKEN_PATH = TOKEN_DIR + "yunmai-data-extract-gsheets.json";
 
+if (useGSheets === true) {
+  const keyfile = "client_secret.json";
+  const keys = JSON.parse(fs.readFileSync(keyfile));
+  const scopes = ["https://www.googleapis.com/auth/spreadsheets"];
 
+  // Create an oAuth2 client to authorize the API call
+  const client = new google.auth.OAuth2(
+    keys.web.client_id,
+    keys.web.client_secret,
+    keys.web.redirect_uris[0]
+  );
 
-const keyfile = 'client_secret.json';
-const keys = JSON.parse(fs.readFileSync(keyfile));
-const scopes = ["https://www.googleapis.com/auth/spreadsheets"];
-
-// Create an oAuth2 client to authorize the API call
-const client = new google.auth.OAuth2(
-  keys.web.client_id,
-  keys.web.client_secret,
-  keys.web.redirect_uris[0]
-);
-
-
-// Generate the url that will be used for authorization
-authorizeUrl = client.generateAuthUrl({
-  access_type: 'offline',
-  scope: scopes,
-});
-
-const app = express();
-
-const server = app.listen(3000, () => {
-});    
-
-app.get('/', (req, res) => {
-  const code = req.query.code;
-  client.getToken(code, (err, tokens) => {
-    if (err) {
-      console.error('Error getting oAuth tokens:');
-      throw err;
-    }
-    client.credentials = tokens;
-    storeToken(tokens);
-    res.send('Authentication successful! Please return to the console.');
-    server.close();
-    writeWeightData(client);
+  // Generate the url that will be used for authorization
+  authorizeUrl = client.generateAuthUrl({
+    access_type: "offline",
+    scope: scopes
   });
-});
 
+  const app = express();
 
-// Check if we have previously stored a token.
-fs.readFile(TOKEN_PATH, function (err, token) {
-  if (err) {
-      opn(authorizeUrl, {wait: false});
-  } else {
-    client.credentials = JSON.parse(token);
-    writeWeightData(client);
-    server.close();
-  }
-});
+  const server = app.listen(3000, () => {});
 
+  app.get("/", (req, res) => {
+    const code = req.query.code;
+    client.getToken(code, (err, tokens) => {
+      if (err) {
+        console.error("Error getting oAuth tokens:");
+        throw err;
+      }
+      client.credentials = tokens;
+      storeToken(tokens);
+      res.send("Authentication successful! Please return to the console.");
+      server.close();
+      writeWeightData(client);
+    });
+  });
+
+  // Check if we have previously stored a token.
+  fs.readFile(TOKEN_PATH, function(err, token) {
+    if (err) {
+      opn(authorizeUrl, { wait: false });
+    } else {
+      client.credentials = JSON.parse(token);
+      writeWeightData(client);
+      server.close();
+    }
+  });
+} else {
+  writeWeightData();
+}
 
 function storeToken(tokens) {
   try {
@@ -102,7 +99,7 @@ function storeToken(tokens) {
     }
   }
 
-  fs.writeFile(TOKEN_PATH, JSON.stringify(tokens), function (err) {
+  fs.writeFile(TOKEN_PATH, JSON.stringify(tokens), function(err) {
     if (err) throw err;
     console.log("Token stored to " + TOKEN_PATH);
   });
@@ -123,21 +120,22 @@ function writeWeightData(auth) {
 
   const options = {
     method: "GET",
-    uri: "http://intdata.iyunmai.com/api/android/scale/list.json?code=" +
+    uri:
+      "http://intdata.iyunmai.com/api/android/scale/list.json?code=" +
       code +
       "&%26startTime=" +
       epochtime +
       "&lang=2" +
       "&userId=" +
       userId +
-      '&versionCode=2' +
+      "&versionCode=2" +
       "&token=" +
       token,
     json: true
   };
 
   request(options)
-    .then(function (response) {
+    .then(function(response) {
       // Request was successful, use the response object at will
       console.dir(response, {
         depth: null
@@ -147,7 +145,7 @@ function writeWeightData(auth) {
         db.put(
           response.data.rows[i].createTime,
           response.data.rows[i],
-          function (err) {
+          function(err) {
             if (err) return console.log("Error writing to LevelDB!", err); // some kind of I/O error
           }
         );
@@ -155,264 +153,271 @@ function writeWeightData(auth) {
 
       console.log("LevelDB updated");
 
-      var sheets = google.sheets("v4");
-      var requests = [];
-      var row = 0;
-      var column = 0;
+      if (useGSheets === true) {
+        var sheets = google.sheets("v4");
+        var requests = [];
+        var row = 0;
+        var column = 0;
 
-      // Set Column Headers
-      requests.push({
-        updateCells: {
-          start: {
-            sheetId: gSheetsTabId,
-            rowIndex: row,
-            columnIndex: column
-          },
-          rows: [{
-            values: [{
-                userEnteredValue: {
-                  stringValue: "Date"
-                },
-                userEnteredFormat: {
-                  textFormat: {
-                    bold: true
-                  }
-                }
-              },
+        // Set Column Headers
+        requests.push({
+          updateCells: {
+            start: {
+              sheetId: gSheetsTabId,
+              rowIndex: row,
+              columnIndex: column
+            },
+            rows: [
               {
-                userEnteredValue: {
-                  stringValue: "Weight (KG)"
-                },
-                userEnteredFormat: {
-                  textFormat: {
-                    bold: true
-                  }
-                }
-              },
-              {
-                userEnteredValue: {
-                  stringValue: "BMI"
-                },
-                userEnteredFormat: {
-                  textFormat: {
-                    bold: true
-                  }
-                }
-              },
-              {
-                userEnteredValue: {
-                  stringValue: "BMR"
-                },
-                userEnteredFormat: {
-                  textFormat: {
-                    bold: true
-                  }
-                }
-              },
-              {
-                userEnteredValue: {
-                  stringValue: "Bone"
-                },
-                userEnteredFormat: {
-                  textFormat: {
-                    bold: true
-                  }
-                }
-              },
-              {
-                userEnteredValue: {
-                  stringValue: "Body Fat"
-                },
-                userEnteredFormat: {
-                  textFormat: {
-                    bold: true
-                  }
-                }
-              },
-              {
-                userEnteredValue: {
-                  stringValue: "Muscle"
-                },
-                userEnteredFormat: {
-                  textFormat: {
-                    bold: true
-                  }
-                }
-              },
-              {
-                userEnteredValue: {
-                  stringValue: "Protein"
-                },
-                userEnteredFormat: {
-                  textFormat: {
-                    bold: true
-                  }
-                }
-              },
-              {
-                userEnteredValue: {
-                  stringValue: "Resistance"
-                },
-                userEnteredFormat: {
-                  textFormat: {
-                    bold: true
-                  }
-                }
-              },
-              {
-                userEnteredValue: {
-                  stringValue: "Body Age"
-                },
-                userEnteredFormat: {
-                  textFormat: {
-                    bold: true
-                  }
-                }
-              },
-              {
-                userEnteredValue: {
-                  stringValue: "Visceral Fat"
-                },
-                userEnteredFormat: {
-                  textFormat: {
-                    bold: true
-                  }
-                }
-              },
-              {
-                userEnteredValue: {
-                  stringValue: "Water"
-                },
-                userEnteredFormat: {
-                  textFormat: {
-                    bold: true
-                  }
-                }
-              }
-            ]
-          }],
-          fields: "userEnteredValue,userEnteredFormat.textFormat"
-        }
-      });
-
-      row++;
-
-      // read the whole LevelDB store as a stream and generate CSV and update GSheets
-      db
-        .createReadStream()
-        .on("data", function (data) {
-          // Save in CSV. Just overwriting entire file each time, so no need to worry about repeated entries
-          wstream.write(
-            data.value.createTime +
-            ", " +
-            data.value.weight +
-            ", " +
-            data.value.bmi +
-            ", " +
-            data.value.bmr +
-            ", " +
-            data.value.bone +
-            ", " +
-            data.value.fat +
-            ", " +
-            data.value.muscle +
-            ", " +
-            data.value.protein +
-            ", " +
-            data.value.resistance +
-            ", " +
-            data.value.somaAge +
-            ", " +
-            data.value.visFat +
-            ", " +
-            data.value.water +
-            "\n"
-          );
-
-          //Save in Google Sheets. Just overwriting entire set of columns each time, so no need to worry about repeated entries
-          //Shouldn't impact any extra columns that users add themselves
-          requests.push({
-            updateCells: {
-              start: {
-                sheetId: gSheetsTabId,
-                rowIndex: row,
-                columnIndex: column
-              },
-              rows: [{
-                values: [{
+                values: [
+                  {
                     userEnteredValue: {
-                      stringValue: data.value.createTime
+                      stringValue: "Date"
                     },
                     userEnteredFormat: {
-                      numberFormat: {
-                        type: "DATE",
-                        pattern: "dd/mm/yyyy hh:mm"
+                      textFormat: {
+                        bold: true
                       }
                     }
                   },
                   {
                     userEnteredValue: {
-                      numberValue: data.value.weight
+                      stringValue: "Weight (KG)"
+                    },
+                    userEnteredFormat: {
+                      textFormat: {
+                        bold: true
+                      }
                     }
                   },
                   {
                     userEnteredValue: {
-                      numberValue: data.value.bmi
+                      stringValue: "BMI"
+                    },
+                    userEnteredFormat: {
+                      textFormat: {
+                        bold: true
+                      }
                     }
                   },
                   {
                     userEnteredValue: {
-                      numberValue: data.value.bmr
+                      stringValue: "BMR"
+                    },
+                    userEnteredFormat: {
+                      textFormat: {
+                        bold: true
+                      }
                     }
                   },
                   {
                     userEnteredValue: {
-                      numberValue: data.value.bone
+                      stringValue: "Bone"
+                    },
+                    userEnteredFormat: {
+                      textFormat: {
+                        bold: true
+                      }
                     }
                   },
                   {
                     userEnteredValue: {
-                      numberValue: data.value.fat
+                      stringValue: "Body Fat"
+                    },
+                    userEnteredFormat: {
+                      textFormat: {
+                        bold: true
+                      }
                     }
                   },
                   {
                     userEnteredValue: {
-                      numberValue: data.value.muscle
+                      stringValue: "Muscle"
+                    },
+                    userEnteredFormat: {
+                      textFormat: {
+                        bold: true
+                      }
                     }
                   },
                   {
                     userEnteredValue: {
-                      numberValue: data.value.protein
+                      stringValue: "Protein"
+                    },
+                    userEnteredFormat: {
+                      textFormat: {
+                        bold: true
+                      }
                     }
                   },
                   {
                     userEnteredValue: {
-                      numberValue: data.value.resistance
+                      stringValue: "Resistance"
+                    },
+                    userEnteredFormat: {
+                      textFormat: {
+                        bold: true
+                      }
                     }
                   },
                   {
                     userEnteredValue: {
-                      numberValue: data.value.somaAge
+                      stringValue: "Body Age"
+                    },
+                    userEnteredFormat: {
+                      textFormat: {
+                        bold: true
+                      }
                     }
                   },
                   {
                     userEnteredValue: {
-                      numberValue: data.value.visFat
+                      stringValue: "Visceral Fat"
+                    },
+                    userEnteredFormat: {
+                      textFormat: {
+                        bold: true
+                      }
                     }
                   },
                   {
                     userEnteredValue: {
-                      numberValue: data.value.water
+                      stringValue: "Water"
+                    },
+                    userEnteredFormat: {
+                      textFormat: {
+                        bold: true
+                      }
                     }
                   }
                 ]
-              }],
-              fields: "userEnteredValue, userEnteredFormat.numberFormat"
-            }
-          });
-          row++;
+              }
+            ],
+            fields: "userEnteredValue,userEnteredFormat.textFormat"
+          }
+        });
+        row++;
+      }
+      // read the whole LevelDB store as a stream and generate CSV and update GSheets
+      db.createReadStream()
+        .on("data", function(data) {
+          // Save in CSV. Just overwriting entire file each time, so no need to worry about repeated entries
+          wstream.write(
+            data.value.createTime +
+              ", " +
+              data.value.weight +
+              ", " +
+              data.value.bmi +
+              ", " +
+              data.value.bmr +
+              ", " +
+              data.value.bone +
+              ", " +
+              data.value.fat +
+              ", " +
+              data.value.muscle +
+              ", " +
+              data.value.protein +
+              ", " +
+              data.value.resistance +
+              ", " +
+              data.value.somaAge +
+              ", " +
+              data.value.visFat +
+              ", " +
+              data.value.water +
+              "\n"
+          );
+
+          if (useGSheets === true) {
+            //Save in Google Sheets. Just overwriting entire set of columns each time, so no need to worry about repeated entries
+            //Shouldn't impact any extra columns that users add themselves
+            requests.push({
+              updateCells: {
+                start: {
+                  sheetId: gSheetsTabId,
+                  rowIndex: row,
+                  columnIndex: column
+                },
+                rows: [
+                  {
+                    values: [
+                      {
+                        userEnteredValue: {
+                          stringValue: data.value.createTime
+                        },
+                        userEnteredFormat: {
+                          numberFormat: {
+                            type: "DATE",
+                            pattern: "dd/mm/yyyy hh:mm"
+                          }
+                        }
+                      },
+                      {
+                        userEnteredValue: {
+                          numberValue: data.value.weight
+                        }
+                      },
+                      {
+                        userEnteredValue: {
+                          numberValue: data.value.bmi
+                        }
+                      },
+                      {
+                        userEnteredValue: {
+                          numberValue: data.value.bmr
+                        }
+                      },
+                      {
+                        userEnteredValue: {
+                          numberValue: data.value.bone
+                        }
+                      },
+                      {
+                        userEnteredValue: {
+                          numberValue: data.value.fat
+                        }
+                      },
+                      {
+                        userEnteredValue: {
+                          numberValue: data.value.muscle
+                        }
+                      },
+                      {
+                        userEnteredValue: {
+                          numberValue: data.value.protein
+                        }
+                      },
+                      {
+                        userEnteredValue: {
+                          numberValue: data.value.resistance
+                        }
+                      },
+                      {
+                        userEnteredValue: {
+                          numberValue: data.value.somaAge
+                        }
+                      },
+                      {
+                        userEnteredValue: {
+                          numberValue: data.value.visFat
+                        }
+                      },
+                      {
+                        userEnteredValue: {
+                          numberValue: data.value.water
+                        }
+                      }
+                    ]
+                  }
+                ],
+                fields: "userEnteredValue, userEnteredFormat.numberFormat"
+              }
+            });
+            row++;
+          }
         })
-        .on("close", function () {
+        .on("close", function() {
           db.close();
           wstream.end();
           console.log("CSV updated");
@@ -422,12 +427,13 @@ function writeWeightData(auth) {
           };
 
           if (useGSheets === true) {
-            sheets.spreadsheets.batchUpdate({
+            sheets.spreadsheets.batchUpdate(
+              {
                 auth: auth,
                 spreadsheetId: gSheetsId,
                 resource: batchUpdateRequest
               },
-              function (err, response) {
+              function(err, response) {
                 if (err) {
                   // Handle error
                   console.log(err);
@@ -438,7 +444,7 @@ function writeWeightData(auth) {
           }
         });
     })
-    .catch(function (err) {
+    .catch(function(err) {
       // Something bad happened, handle the error
       console.dir(err);
     });
