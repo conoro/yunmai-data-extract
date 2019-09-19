@@ -30,7 +30,7 @@ var wstream = fs.createWriteStream("yunmai_weights.csv");
 // Convince Excel to read CSV correctly
 wstream.write("sep=,\n");
 wstream.write(
-  "createTime, weight, bmi, bmr, bone, fat, muscle, protein, resistance, somaAge, visFat, water\n"
+  "createTime, weight, bmi, bmr, bone, fat, skeletalMuscle, protein, resistance, somaAge, visFat, water\n"
 );
 
 // If any problems connecting to GSheets, delete ~/.credentials/yunmai-data-extract-gsheets.json
@@ -232,7 +232,7 @@ function writeWeightData(auth) {
                   },
                   {
                     userEnteredValue: {
-                      stringValue: "Muscle"
+                      stringValue: "skeletalMuscle"
                     },
                     userEnteredFormat: {
                       textFormat: {
@@ -315,7 +315,7 @@ function writeWeightData(auth) {
               ", " +
               data.value.fat +
               ", " +
-              data.value.muscle +
+              data.value.skeletalMuscle +
               ", " +
               data.value.protein +
               ", " +
@@ -380,7 +380,7 @@ function writeWeightData(auth) {
                       },
                       {
                         userEnteredValue: {
-                          numberValue: data.value.muscle
+                          numberValue: data.value.skeletalMuscle
                         }
                       },
                       {
