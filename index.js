@@ -115,6 +115,7 @@ function writeWeightData(auth) {
   // Will also not be able to check expiry/renewal until it happens in real-life
 
   var d = new Date();
+  d.setFullYear(2019, 9, 1);
   d.setHours(0, 0, 0, 0);
   var epochtime = d.getTime() / 1000;
 
