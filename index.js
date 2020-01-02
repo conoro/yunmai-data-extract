@@ -59,7 +59,7 @@ if (useGSheets === true) {
 
   const app = express();
 
-  const server = app.listen(3000, () => {});
+  const server = app.listen(10001, '127.0.0.1', () => {});
 
   app.get("/", (req, res) => {
     const code = req.query.code;
