@@ -32,7 +32,7 @@
     "open": "^6.4.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
-    "snyk": "^1.278.2",
+    "snyk": "^1.290.1",
     "toml": "^2.3.1",
     "toml-require": "git+https://github.com/conoro/toml-require.git"
   },
