@@ -119,24 +119,23 @@ function writeWeightData(auth) {
   d.setHours(0, 0, 0, 0);
   var epochtime = d.getTime() / 1000;
 
+  var uri = `https://intdata.iyunmai.com/api/android/scale/list.json?code=${code}&%26startTime=${epochtime}&lang=2&versionCode=2&signVersion=3&userId=${userId}`
   const options = {
     method: "GET",
-    uri:
-      "http://intdata.iyunmai.com/api/android/scale/list.json?code=" +
-      code +
-      "&%26startTime=" +
-      epochtime +
-      "&lang=2" +
-      "&userId=" +
-      userId +
-      "&versionCode=2" +
-      "&token=" +
-      token,
-    json: true
+    uri: uri,
+    json: true,
+    headers: {
+      'user-agent': 'yunmai_android',
+      'accept-encoding': 'gzip',
+      'accesstoken': token
+    }
   };
 
   request(options)
     .then(function(response) {
+      if (response.result.code !== 0) {
+        throw `Unexpected response code ${response.result.code}, response: ${JSON.stringify(response.result)}`
+      }
       // Request was successful, use the response object at will
       console.dir(response, {
         depth: null
