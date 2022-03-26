@@ -1,5 +1,5 @@
 # Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
-version: v1.13.5
+version: v1.22.1
 # ignores vulnerabilities until expiry date; change duration by modifying expiry date
 ignore:
   'npm:chownr:20180731':
@@ -36,3 +36,38 @@ patch:
         patched: '2019-10-04T01:54:57.185Z'
     - googleapis > googleapis-common > google-auth-library > gcp-metadata > gaxios > https-proxy-agent:
         patched: '2019-10-04T01:54:57.185Z'
+  SNYK-JS-LODASH-567746:
+    - snyk > lodash:
+        patched: '2022-03-26T16:12:40.168Z'
+    - request-promise > request-promise-core > lodash:
+        patched: '2022-03-26T16:12:40.168Z'
+    - snyk > @snyk/dep-graph > lodash:
+        patched: '2022-03-26T16:12:40.168Z'
+    - snyk > inquirer > lodash:
+        patched: '2022-03-26T16:12:40.168Z'
+    - snyk > snyk-config > lodash:
+        patched: '2022-03-26T16:12:40.168Z'
+    - snyk > snyk-mvn-plugin > lodash:
+        patched: '2022-03-26T16:12:40.168Z'
+    - snyk > snyk-nodejs-lockfile-parser > lodash:
+        patched: '2022-03-26T16:12:40.168Z'
+    - snyk > snyk-nuget-plugin > lodash:
+        patched: '2022-03-26T16:12:40.168Z'
+    - snyk > @snyk/dep-graph > graphlib > lodash:
+        patched: '2022-03-26T16:12:40.168Z'
+    - snyk > snyk-go-plugin > graphlib > lodash:
+        patched: '2022-03-26T16:12:40.168Z'
+    - snyk > snyk-nodejs-lockfile-parser > graphlib > lodash:
+        patched: '2022-03-26T16:12:40.168Z'
+    - snyk > @snyk/snyk-cocoapods-plugin > @snyk/dep-graph > lodash:
+        patched: '2022-03-26T16:12:40.168Z'
+    - snyk > snyk-nuget-plugin > dotnet-deps-parser > lodash:
+        patched: '2022-03-26T16:12:40.168Z'
+    - snyk > snyk-php-plugin > @snyk/composer-lockfile-parser > lodash:
+        patched: '2022-03-26T16:12:40.168Z'
+    - snyk > @snyk/snyk-cocoapods-plugin > @snyk/dep-graph > graphlib > lodash:
+        patched: '2022-03-26T16:12:40.168Z'
+    - snyk > @snyk/snyk-cocoapods-plugin > @snyk/cocoapods-lockfile-parser > @snyk/ruby-semver > lodash:
+        patched: '2022-03-26T16:12:40.168Z'
+    - snyk > @snyk/snyk-cocoapods-plugin > @snyk/cocoapods-lockfile-parser > @snyk/dep-graph > graphlib > lodash:
+        patched: '2022-03-26T16:12:40.168Z'
