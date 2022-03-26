@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "snyk-protect": "snyk protect",
+    "snyk-protect": "snyk-protect",
     "prepare": "npm run snyk-protect"
   },
   "repository": {
@@ -32,9 +32,9 @@
     "open": "^6.4.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
-    "snyk": "^1.290.1",
     "toml": "^2.3.1",
-    "toml-require": "git+https://github.com/conoro/toml-require.git"
+    "toml-require": "git+https://github.com/conoro/toml-require.git",
+    "@snyk/protect": "latest"
   },
   "snyk": true
 }
