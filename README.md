@@ -1,6 +1,6 @@
 # Intro
 
-_NOTE:_ Code currently (September 2019) working again
+_NOTE:_ As the API is now HTTPS (in 2022), this code doesn't work, and is unlikely to ever work, unless Yunmai open up their API.
 
 The [Yunmai weighing scales](http://www.iyunmai.com/us/light/) is an impressive inexpensive smart scales with Bluetooth. I bought mine from [GearBest](http://www.gearbest.com/monitoring-testing/pp_332025.html). If you install their app on your phone, it will connect to the scales and save all of your data, each time you weigh yourself.
 
