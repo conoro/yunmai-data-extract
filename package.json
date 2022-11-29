@@ -1,12 +1,10 @@
 {
   "name": "yunmai-data-extract",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Extract data from Yunmai weighing scales Cloud API so you can use it as you wish",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -25,16 +23,14 @@
   },
   "homepage": "https://github.com/conoro/yunmai-data-extract#readme",
   "dependencies": {
-    "express": "^4.17.1",
-    "google-auth-library": "^6.0.0",
-    "googleapis": "^49.0.0",
-    "level": "^5.0.1",
-    "open": "^6.4.0",
-    "request": "^2.88.0",
-    "request-promise": "^4.2.4",
-    "snyk": "^1.290.1",
-    "toml": "^2.3.1",
+    "express": "^4.18.2",
+    "google-auth-library": "^8.7.0",
+    "googleapis": "^109.0.1",
+    "level": "^8.0.0",
+    "open": "^8.4.0",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6",
+    "toml": "^3.0.0",
     "toml-require": "git+https://github.com/conoro/toml-require.git"
-  },
-  "snyk": true
+  }
 }
