@@ -1,8 +1,8 @@
 # Intro
 
-_NOTE:_ As the API is now HTTPS (in 2022), this code doesn't work, and is unlikely to ever work, unless Yunmai open up their API.
+_NOTE:_ As the API is now HTTPS (in 2022), this code doesn't work, and is unlikely to ever work, unless Yunmai opens up their API.
 
-The [Yunmai weighing scales](http://www.iyunmai.com/us/light/) is an impressive inexpensive smart scales with Bluetooth. I bought mine from [GearBest](http://www.gearbest.com/monitoring-testing/pp_332025.html). If you install their app on your phone, it will connect to the scales and save all of your data, each time you weigh yourself.
+The [Yunmai weighing scales](https://yunmaiglobal.com/collections/bmi-scale) is an impressive inexpensive smart scales with Bluetooth. I bought mine from [GearBest](http://www.gearbest.com/monitoring-testing/pp_332025.html). If you install their app on your phone, it will connect to the scales and save all of your data, each time you weigh yourself.
 
 Whilst it isn't obvious, Yunmai is also saving all of your data to their Cloud. Unfortunately they have no webapp for accessing this data and no way for you to dump it out either.
 
