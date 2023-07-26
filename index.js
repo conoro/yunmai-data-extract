@@ -16,14 +16,15 @@ const path = require("path");
 const fs = require("fs");
 
 const { GoogleAuth } = require("google-auth-library");
-var level = require("level");
+const { Level } = require("level");
+const { EntryStream } = require("level-read-stream");
 const request = require("request-promise");
 
 require("toml-require");
 require("./conf.toml");
 
-var db = level("yunmai_weights.db", {
-  valueEncoding: "json"
+var db = new Level("yunmai_weights.db", {
+  valueEncoding: "json",
 });
 var wstream = fs.createWriteStream("yunmai_weights.csv");
 
@@ -299,8 +300,8 @@ function writeWeightData(auth) {
         row++;
       }
       // read the whole LevelDB store as a stream and generate CSV and update GSheets
-      db.createReadStream()
-        .on("data", function(data) {
+      new EntryStream(db)
+        .on("data", function (data) {
           // Save in CSV. Just overwriting entire file each time, so no need to worry about repeated entries
           wstream.write(
             data.value.createTime +
