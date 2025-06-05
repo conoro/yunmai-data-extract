@@ -32,6 +32,6 @@
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "toml": "^3.0.0",
-    "toml-require": "git+https://github.com/conoro/toml-require.git"
+    "toml-require": "1.2.0"
   }
 }
